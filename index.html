@@ -68,17 +68,13 @@
       content: '';
       position: fixed;
       inset: 0;
-      background-image:
-        radial-gradient(circle at 20% 20%, rgba(184, 151, 66, .05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(212, 175, 55, .04) 0%, transparent 50%);
+      background-image: url('assets/download (16).jpeg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.08;
       pointer-events: none;
       z-index: 0;
-    }
-
-    @media (max-width: 700px) {
-      body::before {
-        background-image: none;
-      }
     }
 
     /* ========== OPENING SCREEN ========== */
@@ -424,6 +420,7 @@
 
     /* ——— HERO IMAGE FRAME ——— */
     .hero-image-frame {
+      display: none;
       position: relative;
       width: clamp(200px, 42vw, 380px);
       margin: 1.5rem auto 0;
@@ -514,12 +511,12 @@
     }
 
     .couple-names {
-      font-family: 'Petemoss', cursive;
-      font-size: clamp(4.2rem, 12vw, 9.5rem);
-      font-weight: 400;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 7.5vw, 5.5rem);
+      font-weight: 300;
       line-height: 1.1;
       color: var(--cream);
-      letter-spacing: normal;
+      letter-spacing: 0.05em;
       opacity: 0;
       display: flex;
       flex-direction: column;
@@ -534,10 +531,11 @@
 
     .couple-names .amp {
       display: block;
-      font-family: 'Petemoss', cursive;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
       font-size: 0.85em;
       color: var(--gold);
-      margin: 0.1em 0 -0.22em 0; /* Significantly reduced bottom margin to pull Hanan's name closer */
+      margin: 0.05em 0;
       text-shadow: 0 0 40px rgba(212, 175, 55, .5);
     }
 
@@ -943,7 +941,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: clamp(0.8rem, 3vw, 2.5rem);
+      gap: clamp(0.4rem, 2.5vw, 2rem);
       flex-wrap: nowrap;
       margin-top: 3rem;
     }
@@ -957,8 +955,8 @@
 
     .cd-ring {
       position: relative;
-      width: clamp(68px, 14vw, 120px);
-      height: clamp(68px, 14vw, 120px);
+      width: clamp(55px, 13vw, 110px);
+      height: clamp(55px, 13vw, 110px);
     }
 
     .cd-ring svg {
@@ -990,7 +988,7 @@
       align-items: center;
       justify-content: center;
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+      font-size: clamp(1.1rem, 3vw, 2.4rem);
       font-weight: 300;
       color: var(--cream);
       line-height: 1;
@@ -998,9 +996,9 @@
 
     .cd-lbl {
       margin-top: 0.6rem;
-      font-size: clamp(0.5rem, 1.2vw, 0.6rem);
+      font-size: clamp(0.45rem, 1.2vw, 0.6rem);
       font-weight: 300;
-      letter-spacing: .4em;
+      letter-spacing: .3em;
       text-transform: uppercase;
       color: var(--gold-lo);
     }
@@ -1120,12 +1118,14 @@
 
     @media (max-width:700px) {
       #hero {
-        background: radial-gradient(ellipse at 50% 30%, #ffffff 0%, #faf7f2 60%, var(--dark) 100%);
+        background-image: url('assets/hero-bg.webp');
+        background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
       }
 
       .hero-image-frame {
-        width: clamp(180px, 55vw, 300px);
-        border-radius: 180px 180px 10px 10px;
+        display: none;
       }
 
       .family-grid {
@@ -1215,14 +1215,17 @@
     }
 
     .footer-names {
-      font-family: 'Petemoss', cursive;
-      font-size: clamp(2rem, 6vw, 3rem);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+      font-weight: 300;
       color: var(--cream);
-      line-height: 1;
-      letter-spacing: 0.03em;
+      line-height: 1.2;
+      letter-spacing: 0.05em;
     }
 
     .footer-names .footer-amp {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
       color: var(--gold);
       font-size: 0.9em;
       margin: 0 0.15em;
