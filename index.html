@@ -6,8 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SHAMIL & HANAN — Wedding Invitation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Poppins:wght@200;300;400&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;500;600;700&family=Great+Vibes&family=Dancing+Script:wght@400;500;600;700&family=Petemoss&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Poppins:wght@200;300;400&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;500;600;700&family=Petemoss&display=swap"
     rel="stylesheet">
   <style>
     :root {
@@ -62,7 +63,7 @@
       border-radius: 2px;
     }
 
-    /* ——— TEXTURE OVERLAY ——— */
+    /* ——— TEXTURE OVERLAY (simplified for perf) ——— */
     body::before {
       content: '';
       position: fixed;
@@ -72,6 +73,12 @@
         radial-gradient(circle at 80% 80%, rgba(212, 175, 55, .04) 0%, transparent 50%);
       pointer-events: none;
       z-index: 0;
+    }
+
+    @media (max-width: 700px) {
+      body::before {
+        background-image: none;
+      }
     }
 
     /* ========== OPENING SCREEN ========== */
@@ -413,6 +420,38 @@
       align-items: center;
       justify-content: center;
       background: radial-gradient(ellipse at 50% 30%, #ffffff 0%, #faf7f2 60%, var(--dark) 100%);
+    }
+
+    /* ——— HERO IMAGE FRAME ——— */
+    .hero-image-frame {
+      position: relative;
+      width: clamp(200px, 42vw, 380px);
+      margin: 1.5rem auto 0;
+      border-radius: 220px 220px 12px 12px;
+      overflow: hidden;
+      border: 1.5px solid rgba(212, 175, 55, 0.45);
+      box-shadow:
+        0 12px 48px rgba(138, 102, 16, 0.12),
+        0 0 0 6px rgba(255, 255, 255, 0.92),
+        0 0 0 7.5px rgba(212, 175, 55, 0.18);
+    }
+
+    .hero-image-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 35%, transparent 70%, rgba(250,247,242,0.45) 100%);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .hero-image-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      aspect-ratio: 9 / 16;
+      border-radius: inherit;
     }
 
     .hero-inner {
@@ -1044,7 +1083,6 @@
       transform-origin: top center;
       transition: opacity 1.25s cubic-bezier(0.16, 1, 0.3, 1), 
                   transform 1.25s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: transform, opacity;
     }
 
     .reveal.in {
@@ -1071,15 +1109,23 @@
         gap: 2rem;
       }
       #heavenly-canvas {
-        opacity: 0.3;
+        opacity: 0.2;
+      }
+      .glass-card {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(255, 255, 255, 0.96);
       }
     }
 
     @media (max-width:700px) {
       #hero {
-        background:
-          linear-gradient(rgba(255,255,255,0.45), rgba(255,255,255,0.45)),
-          url('assets/download (15).jpeg') center center / cover no-repeat;
+        background: radial-gradient(ellipse at 50% 30%, #ffffff 0%, #faf7f2 60%, var(--dark) 100%);
+      }
+
+      .hero-image-frame {
+        width: clamp(180px, 55vw, 300px);
+        border-radius: 180px 180px 10px 10px;
       }
 
       .family-grid {
@@ -1254,7 +1300,6 @@
       opacity: 0;
       filter: blur(12px);
       transform: translateY(-30px);
-      will-change: transform, filter, opacity;
     }
     .reveal.in .blur-text-item {
       animation: blurFadeIn 0.85s cubic-bezier(0.215, 0.610, 0.355, 1) forwards;
@@ -1288,7 +1333,6 @@
       display: inline-block;
       opacity: 0;
       transform: translateY(40px);
-      will-change: transform, opacity;
     }
     .reveal.in .split-char {
       animation: splitFadeUp 0.7s cubic-bezier(0.215, 0.610, 0.355, 1) forwards;
@@ -1517,6 +1561,14 @@
             <span class="amp">&</span>
             <span class="shiny-text">Hanan Ummer</span>
           </h1>
+        </div>
+
+        <!-- Elegant Portrait Frame -->
+        <div class="hero-image-frame reveal reveal-delay-1">
+          <picture>
+            <source srcset="assets/hero-bg.webp" type="image/webp">
+            <img src="assets/download (15).jpeg" alt="Shamil & Hanan" width="736" height="1308" loading="eager" decoding="async">
+          </picture>
         </div>
 
         <div class="hero-details-bottom">
@@ -1836,12 +1888,14 @@
     });
 
     /* ================================================================
-       STARS — Opening Screen
+       STARS — Opening Screen (optimized)
     ================================================================ */
     (function () {
       const cv = document.getElementById('stars-canvas');
       const cx = cv.getContext('2d');
       let stars = [], raf;
+      const isMobile = window.innerWidth <= 700;
+      const STAR_COUNT = isMobile ? 80 : 220;
 
       function resize() {
         cv.width = window.innerWidth;
@@ -1849,7 +1903,7 @@
       }
       function buildStars() {
         stars = [];
-        for (let i = 0; i < 220; i++) {
+        for (let i = 0; i < STAR_COUNT; i++) {
           stars.push({
             x: Math.random() * cv.width,
             y: Math.random() * cv.height,
@@ -1862,18 +1916,19 @@
       }
       function draw() {
         cx.clearRect(0, 0, cv.width, cv.height);
-        stars.forEach(s => {
+        for (let i = 0; i < stars.length; i++) {
+          const s = stars[i];
           s.t += s.ts;
           const op = (Math.sin(s.t) * .5 + .5) * (s.pulse ? .8 : .45) + .05;
           cx.beginPath();
           cx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
           cx.fillStyle = `rgba(212,175,55,${op})`;
           cx.fill();
-        });
+        }
         raf = requestAnimationFrame(draw);
       }
       resize(); buildStars(); draw();
-      window.addEventListener('resize', () => { resize(); buildStars(); });
+      window.addEventListener('resize', () => { resize(); buildStars(); }, { passive: true });
       window._stopStars = () => cancelAnimationFrame(raf);
     })();
 
@@ -2043,50 +2098,68 @@
     initSplitTexts();
 
     /* ================================================================
-       HEAVENLY LUXURY BACKGROUND ENGINE
+       HEAVENLY LUXURY BACKGROUND ENGINE (performance-optimized)
     ================================================================ */
     (function () {
       const canvas = document.getElementById('heavenly-canvas');
-      const ctx = canvas.getContext('2d');
       if (!canvas) return;
+      const ctx = canvas.getContext('2d');
 
       let particles = [];
       let mouseX = 0, mouseY = 0;
       let targetMouseX = 0, targetMouseY = 0;
 
+      // Mobile detection
+      const isMobile = window.matchMedia('(max-width: 900px)').matches;
+      const isTouch = 'ontouchstart' in window;
+      const LARGE_COUNT = isMobile ? 8 : 22;
+      const DUST_COUNT = isMobile ? 15 : 45;
+
       function resize() {
-        const dpr = window.devicePixelRatio || 1;
+        // Cap DPR at 1 on mobile to halve pixel fill-rate
+        const dpr = isMobile ? 1 : (window.devicePixelRatio || 1);
         canvas.width = window.innerWidth * dpr;
         canvas.height = window.innerHeight * dpr;
-        ctx.scale(dpr, dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
 
-      window.addEventListener('resize', resize);
-      window.addEventListener('mousemove', (e) => {
-        targetMouseX = (e.clientX - window.innerWidth / 2) * 0.08;
-        targetMouseY = (e.clientY - window.innerHeight / 2) * 0.08;
-      });
+      window.addEventListener('resize', resize, { passive: true });
 
+      // Skip mouse tracking on touch devices (saves per-frame lerp)
+      if (!isTouch) {
+        window.addEventListener('mousemove', (e) => {
+          targetMouseX = (e.clientX - window.innerWidth / 2) * 0.08;
+          targetMouseY = (e.clientY - window.innerHeight / 2) * 0.08;
+        }, { passive: true });
+      }
+
+      // On mobile: flat gold color; on desktop: gradient
       function drawGoldStroke(ctx, x, y, size, action, opacity) {
         ctx.save();
-        const grad = ctx.createLinearGradient(x - size, y - size, x + size, y + size);
-        // Soft royal Pakistani and Kashmiri golden metallic gradients (Champagne, Gold, Bronze Gold)
-        grad.addColorStop(0, `rgba(138, 102, 16, ${opacity})`);
-        grad.addColorStop(0.3, `rgba(212, 175, 55, ${opacity})`);
-        grad.addColorStop(0.5, `rgba(243, 229, 171, ${opacity})`);
-        grad.addColorStop(0.7, `rgba(212, 175, 55, ${opacity})`);
-        grad.addColorStop(1, `rgba(138, 102, 16, ${opacity})`);
-        
-        ctx.strokeStyle = grad;
-        ctx.fillStyle = grad;
-        ctx.lineWidth = 2.4;
-        ctx.shadowColor = `rgba(212, 175, 55, ${opacity * 0.25})`;
-        ctx.shadowBlur = 12;
+        if (isMobile) {
+          // Flat color — avoids createLinearGradient + shadowBlur per particle
+          const c = `rgba(212, 175, 55, ${opacity})`;
+          ctx.strokeStyle = c;
+          ctx.fillStyle = c;
+          ctx.lineWidth = 2;
+        } else {
+          const grad = ctx.createLinearGradient(x - size, y - size, x + size, y + size);
+          grad.addColorStop(0, `rgba(138, 102, 16, ${opacity})`);
+          grad.addColorStop(0.3, `rgba(212, 175, 55, ${opacity})`);
+          grad.addColorStop(0.5, `rgba(243, 229, 171, ${opacity})`);
+          grad.addColorStop(0.7, `rgba(212, 175, 55, ${opacity})`);
+          grad.addColorStop(1, `rgba(138, 102, 16, ${opacity})`);
+          ctx.strokeStyle = grad;
+          ctx.fillStyle = grad;
+          ctx.lineWidth = 2.4;
+          ctx.shadowColor = `rgba(212, 175, 55, ${opacity * 0.25})`;
+          ctx.shadowBlur = 12;
+        }
         action();
         ctx.restore();
       }
 
-      // Drawing paths
+      // Drawing paths (unchanged)
       function pathOctagram(ctx, size) {
         ctx.beginPath();
         for (let i = 0; i < 8; i++) {
@@ -2096,8 +2169,6 @@
         }
         ctx.closePath();
         ctx.stroke();
-        
-        // Inner double frame
         ctx.beginPath();
         for (let i = 0; i < 8; i++) {
           const angle = (i * Math.PI) / 4;
@@ -2114,8 +2185,6 @@
         ctx.arc(size * 0.35, 0, size * 0.88, Math.PI * 0.5, -Math.PI * 0.5, true);
         ctx.closePath();
         ctx.stroke();
-
-        // 8-Point Star inside crescent
         ctx.beginPath();
         const sx = size * 0.42;
         const sy = -size * 0.12;
@@ -2134,8 +2203,6 @@
         ctx.bezierCurveTo(-size * 0.85, -size * 0.45, -size * 0.85, size * 0.55, 0, size);
         ctx.bezierCurveTo(size * 0.85, size * 0.55, size * 0.45, -size * 0.15, 0, -size);
         ctx.stroke();
-
-        // Filigree inner loop
         ctx.beginPath();
         ctx.moveTo(0, -size * 0.55);
         ctx.bezierCurveTo(-size * 0.4, -size * 0.2, -size * 0.4, size * 0.35, 0, size * 0.65);
@@ -2144,12 +2211,9 @@
       }
 
       function pathLantern(ctx, size) {
-        // Dome cap
         ctx.beginPath();
         ctx.arc(0, -size * 0.75, size * 0.12, 0, Math.PI * 2);
         ctx.stroke();
-        
-        // Frame
         ctx.beginPath();
         ctx.moveTo(-size * 0.25, -size * 0.55);
         ctx.lineTo(size * 0.25, -size * 0.55);
@@ -2159,8 +2223,6 @@
         ctx.lineTo(-size * 0.4, 0);
         ctx.closePath();
         ctx.stroke();
-
-        // Inner panels
         ctx.beginPath();
         ctx.moveTo(-size * 0.1, -size * 0.55);
         ctx.lineTo(-size * 0.12, 0);
@@ -2169,8 +2231,6 @@
         ctx.lineTo(size * 0.12, 0);
         ctx.lineTo(size * 0.06, size * 0.55);
         ctx.stroke();
-
-        // Light bulb
         ctx.beginPath();
         ctx.arc(0, 0, size * 0.09, 0, Math.PI * 2);
         ctx.fill();
@@ -2182,8 +2242,6 @@
         ctx.arc(0, 0, size, 0, Math.PI * 2);
         ctx.stroke();
         ctx.clip();
-
-        // Lattice lines
         ctx.beginPath();
         const spacing = size * 0.45;
         for (let i = -size * 2; i < size * 2; i += spacing) {
@@ -2200,8 +2258,6 @@
         ctx.beginPath();
         ctx.arc(0, 0, size, 0, Math.PI * 2);
         ctx.stroke();
-        
-        // Concentric geometry dots
         const dotCount = 12;
         for (let i = 0; i < dotCount; i++) {
           const angle = (i * Math.PI * 2) / dotCount;
@@ -2215,8 +2271,7 @@
       const types = ['octagram', 'crescent', 'paisley', 'lantern', 'kashmiri', 'mandala'];
       function initParticles() {
         particles = [];
-        // Spawn 22 large high-quality elements
-        for (let i = 0; i < 22; i++) {
+        for (let i = 0; i < LARGE_COUNT; i++) {
           particles.push({
             type: types[i % types.length],
             x: Math.random() * window.innerWidth - window.innerWidth / 2,
@@ -2236,9 +2291,7 @@
             pulsePhase: Math.random() * Math.PI * 2
           });
         }
-
-        // Spawn 45 tiny sparkling dust dots
-        for (let i = 0; i < 45; i++) {
+        for (let i = 0; i < DUST_COUNT; i++) {
           particles.push({
             type: 'dust',
             x: Math.random() * window.innerWidth - window.innerWidth / 2,
@@ -2254,22 +2307,33 @@
             pulsePhase: Math.random() * Math.PI * 2
           });
         }
+        // Sort ONCE by Z depth instead of every frame
+        particles.sort((a, b) => b.z - a.z);
       }
 
+      // Cache window dimensions to avoid per-frame layout reads
+      let winW = window.innerWidth;
+      let winH = window.innerHeight;
+      window.addEventListener('resize', () => { winW = window.innerWidth; winH = window.innerHeight; }, { passive: true });
+
       function updateAndDraw() {
-        ctx.clearRect(0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1));
+        const dpr = isMobile ? 1 : (window.devicePixelRatio || 1);
+        ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
-        // Smooth mouse follow
-        mouseX += (targetMouseX - mouseX) * 0.05;
-        mouseY += (targetMouseY - mouseY) * 0.05;
+        // Smooth mouse follow (skipped on touch)
+        if (!isTouch) {
+          mouseX += (targetMouseX - mouseX) * 0.05;
+          mouseY += (targetMouseY - mouseY) * 0.05;
+        }
 
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
+        const centerX = winW / 2;
+        const centerY = winH / 2;
+        const halfW = winW / 2;
+        const halfH = winH / 2;
 
-        // Sort particles by Z depth for realistic rendering layers
-        particles.sort((a, b) => b.z - a.z);
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
 
-        particles.forEach(p => {
           // Update physics
           p.y += p.speedY;
           p.x += p.speedX;
@@ -2279,29 +2343,27 @@
           p.pulsePhase += p.pulseSpeed;
 
           // Wrap boundaries
-          const wrapLimitX = window.innerWidth / 2 + 100;
-          const wrapLimitY = window.innerHeight / 2 + 100;
+          const wrapLimitX = halfW + 100;
+          const wrapLimitY = halfH + 100;
 
           if (p.y > wrapLimitY) {
             p.y = -wrapLimitY;
-            p.x = Math.random() * window.innerWidth - window.innerWidth / 2;
+            p.x = Math.random() * winW - halfW;
           }
           if (p.x > wrapLimitX) p.x = -wrapLimitX;
           if (p.x < -wrapLimitX) p.x = wrapLimitX;
 
-          // Projection calculation
+          // Projection
           const fov = 400;
           const scale = fov / (fov + p.z);
           const projX = centerX + (p.x + mouseX * p.parallaxFactor) * scale;
           const projY = centerY + (p.y + mouseY * p.parallaxFactor) * scale;
           const renderSize = p.size * scale;
 
-          // Only render visible elements
-          if (projX < -100 || projX > window.innerWidth + 100 || projY < -100 || projY > window.innerHeight + 100) {
-            return;
-          }
+          // Cull off-screen
+          if (projX < -100 || projX > winW + 100 || projY < -100 || projY > winH + 100) continue;
 
-          // Calculate pulsing opacity
+          // Pulsing opacity
           const opacity = (Math.sin(p.pulsePhase) * 0.18 + 0.62) * (1 - p.z / 380) * 0.72;
 
           if (p.type === 'dust') {
@@ -2309,14 +2371,16 @@
             ctx.beginPath();
             ctx.arc(projX, projY, renderSize, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(243, 229, 171, ${opacity * 1.5})`;
-            ctx.shadowColor = 'rgba(212, 175, 55, 0.4)';
-            ctx.shadowBlur = 8;
+            if (!isMobile) {
+              ctx.shadowColor = 'rgba(212, 175, 55, 0.4)';
+              ctx.shadowBlur = 8;
+            }
             ctx.fill();
             ctx.restore();
-            return;
+            continue;
           }
 
-          // 3D rotation projection simulation
+          // 3D rotation projection
           ctx.save();
           ctx.translate(projX, projY);
           ctx.scale(Math.cos(p.rotY), Math.sin(p.rotX) * 0.2 + 0.8);
@@ -2334,7 +2398,7 @@
           }, opacity);
 
           ctx.restore();
-        });
+        }
 
         requestAnimationFrame(updateAndDraw);
       }
