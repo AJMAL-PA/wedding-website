@@ -1114,12 +1114,33 @@
         -webkit-backdrop-filter: none;
         background: rgba(255, 255, 255, 0.96);
       }
+      .blur-text-item {
+        filter: none !important;
+        transform: translateY(-20px);
+      }
+      .reveal.in .blur-text-item {
+        animation: mobileFadeIn 0.85s cubic-bezier(0.215, 0.610, 0.355, 1) forwards;
+      }
+      @keyframes mobileFadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        50% {
+          opacity: 0.5;
+          transform: translateY(3px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     }
 
     @media (max-width:700px) {
       #hero {
-        background-image: url('assets/download (15).jpeg');
-        background-size: 100% 100% !important;
+        background-image: url('assets/download (20).jpeg') !important;
+        background-size: cover !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
         min-height: 100vh !important;
@@ -1310,6 +1331,7 @@
       opacity: 0;
       filter: blur(12px);
       transform: translateY(-30px);
+      will-change: transform, opacity;
     }
     .reveal.in .blur-text-item {
       animation: blurFadeIn 0.85s cubic-bezier(0.215, 0.610, 0.355, 1) forwards;
@@ -1327,7 +1349,7 @@
       }
       100% {
         opacity: 1;
-        filter: blur(0px);
+        filter: none;
         transform: translateY(0);
       }
     }
@@ -1337,7 +1359,10 @@
       display: inline-block;
       overflow: hidden;
       white-space: normal;
-      word-wrap: break-word;
+    }
+    .word-wrapper {
+      display: inline-block;
+      white-space: nowrap;
     }
     .split-char {
       display: inline-block;
@@ -1617,7 +1642,7 @@
 
             <div class="family-member">
               <div class="family-label">Parents</div>
-              <div class="family-name">Mujeeeb Rehiman Maliyakkal</div>
+              <div class="family-name">Mujeeb Rehiman Maliyakkal</div>
               <div style="font-size: 1.1rem; color: var(--gold); margin: 0.2rem 0;">&amp;</div>
               <div class="family-name">Naseena Mujeeb</div>
             </div>
@@ -1730,7 +1755,7 @@
                   <span class="ev-icon">✦</span>
                   <div class="ev-label">Venue</div>
                   <div class="ev-val">Malabar Marina Convention Centre</div>
-                  <div class="ev-sub">Madhura Bazar ,B.C Road,cheruvannur</div>
+                  <div class="ev-sub">Madhura Bazar, B.C. Road, Cheruvannur</div>
                 </div>
               </div>
             </div>
@@ -1756,7 +1781,7 @@
     <div class="sec-wrap" id="sec-count">
       <div class="sec-inner reveal" style="text-align:center;">
         <span class="sec-label" style="text-align:center;">Counting Down</span>
-        <p class="sec-heading split-text" data-split="chars" data-delay="15">Time moves Slowly when you're waiting for something beutiful.</p>
+        <p class="sec-heading split-text" data-split="chars" data-delay="15">Time moves slowly when you're waiting for something beautiful.</p>
 
         <div class="cd-grid">
           <div class="cd-item">
@@ -2038,33 +2063,50 @@
       document.querySelectorAll('.blur-text').forEach(el => {
         const mode = el.getAttribute('data-animate') || 'words';
         const delayMs = parseInt(el.getAttribute('data-delay') || '80');
-        let text = el.innerHTML.replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+        let text = el.textContent.replace(/\s+/g, ' ').trim();
         el.innerHTML = '';
         
-        let segments;
         if (mode === 'words') {
-          segments = text.split(' ');
-        } else {
-          segments = text.split('');
-        }
-        
-        segments.forEach((seg, idx) => {
-          const span = document.createElement('span');
-          span.className = 'blur-text-item';
-          span.style.animationDelay = `${idx * delayMs}ms`;
-          if (seg === ' ') {
-            span.innerHTML = '&nbsp;';
-          } else {
+          const segments = text.split(' ');
+          segments.forEach((seg, idx) => {
+            const span = document.createElement('span');
+            span.className = 'blur-text-item';
+            span.style.animationDelay = `${idx * delayMs}ms`;
             span.textContent = seg;
-          }
-          el.appendChild(span);
-          
-          if (mode === 'words' && idx < segments.length - 1) {
-            const space = document.createElement('span');
-            space.innerHTML = '&nbsp;';
-            el.appendChild(space);
-          }
-        });
+            el.appendChild(span);
+            
+            if (idx < segments.length - 1) {
+              const space = document.createElement('span');
+              space.innerHTML = '&nbsp;';
+              el.appendChild(space);
+            }
+          });
+        } else {
+          const words = text.split(' ');
+          let charIdx = 0;
+          words.forEach((word, wordIdx) => {
+            const wordSpan = document.createElement('span');
+            wordSpan.className = 'word-wrapper';
+            
+            const chars = word.split('');
+            chars.forEach(char => {
+              const charSpan = document.createElement('span');
+              charSpan.className = 'blur-text-item';
+              charSpan.style.animationDelay = `${charIdx * delayMs}ms`;
+              charSpan.textContent = char;
+              wordSpan.appendChild(charSpan);
+              charIdx++;
+            });
+            el.appendChild(wordSpan);
+            
+            if (wordIdx < words.length - 1) {
+              const space = document.createElement('span');
+              space.innerHTML = '&nbsp;';
+              charIdx++;
+              el.appendChild(space);
+            }
+          });
+        }
       });
     }
     initBlurTexts();
@@ -2079,30 +2121,47 @@
         let text = el.textContent.replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
         el.innerHTML = '';
         
-        let segments;
         if (mode === 'words') {
-          segments = text.split(' ');
-        } else {
-          segments = text.split('');
-        }
-        
-        segments.forEach((seg, idx) => {
-          const span = document.createElement('span');
-          span.className = mode === 'words' ? 'split-word' : 'split-char';
-          span.style.animationDelay = `${idx * delayMs}ms`;
-          if (seg === ' ') {
-            span.innerHTML = '&nbsp;';
-          } else {
+          const segments = text.split(' ');
+          segments.forEach((seg, idx) => {
+            const span = document.createElement('span');
+            span.className = 'split-word';
+            span.style.animationDelay = `${idx * delayMs}ms`;
             span.textContent = seg;
-          }
-          el.appendChild(span);
-          
-          if (mode === 'words' && idx < segments.length - 1) {
-            const space = document.createElement('span');
-            space.innerHTML = '&nbsp;';
-            el.appendChild(space);
-          }
-        });
+            el.appendChild(span);
+            
+            if (idx < segments.length - 1) {
+              const space = document.createElement('span');
+              space.innerHTML = '&nbsp;';
+              el.appendChild(space);
+            }
+          });
+        } else {
+          const words = text.split(' ');
+          let charIdx = 0;
+          words.forEach((word, wordIdx) => {
+            const wordSpan = document.createElement('span');
+            wordSpan.className = 'word-wrapper';
+            
+            const chars = word.split('');
+            chars.forEach(char => {
+              const charSpan = document.createElement('span');
+              charSpan.className = 'split-char';
+              charSpan.style.animationDelay = `${charIdx * delayMs}ms`;
+              charSpan.textContent = char;
+              wordSpan.appendChild(charSpan);
+              charIdx++;
+            });
+            el.appendChild(wordSpan);
+            
+            if (wordIdx < words.length - 1) {
+              const space = document.createElement('span');
+              space.innerHTML = '&nbsp;';
+              charIdx++;
+              el.appendChild(space);
+            }
+          });
+        }
       });
     }
     initSplitTexts();
