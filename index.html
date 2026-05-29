@@ -35,6 +35,7 @@
 
     html {
       scroll-behavior: smooth;
+      overflow-x: hidden;
     }
 
     body {
@@ -1107,7 +1108,7 @@
         gap: 2rem;
       }
       #heavenly-canvas {
-        opacity: 0.2;
+        opacity: 0.62;
       }
       .glass-card {
         backdrop-filter: none;
@@ -1138,6 +1139,10 @@
     }
 
     @media (max-width:700px) {
+      body::before {
+        display: none !important;
+      }
+
       #hero {
         background-image: url('assets/download (20).jpeg') !important;
         background-size: cover !important;
@@ -1172,6 +1177,9 @@
 
       .glass-card {
         padding: 2rem 1.2rem;
+        background: transparent !important;
+        border-color: rgba(212, 175, 55, 0.3) !important;
+        box-shadow: none !important;
       }
 
       .loc-btn {
@@ -1184,20 +1192,14 @@
       /* Trigger matching glow when the scroll reveal becomes visible (.in class is added) */
       .reveal.in .card-nikah {
         border-color: rgba(212, 175, 55, 0.6) !important;
-        background: rgba(255, 253, 245, 0.94) !important;
-        box-shadow: 
-          0 15px 30px rgba(212, 175, 55, 0.1), 
-          0 1px 3px rgba(212, 175, 55, 0.04),
-          inset 0 0 20px rgba(212, 175, 55, 0.04) !important;
+        background: transparent !important;
+        box-shadow: none !important;
       }
 
       .reveal.in .card-reception {
         border-color: rgba(186, 140, 43, 0.6) !important;
-        background: rgba(255, 252, 248, 0.94) !important;
-        box-shadow: 
-          0 15px 30px rgba(186, 140, 43, 0.1), 
-          0 1px 3px rgba(186, 140, 43, 0.04),
-          inset 0 0 20px rgba(186, 140, 43, 0.04) !important;
+        background: transparent !important;
+        box-shadow: none !important;
       }
 
       /* Trigger the metallic shine sweep once automatically on scroll reveal in mobile */
@@ -1214,10 +1216,22 @@
         padding: 3rem 1.5rem;
       }
 
+      .close-inner {
+        padding: 0 1.5rem 2.5rem 1.5rem !important;
+      }
+
+      .close-ameen {
+        margin: 1.5rem 0 1rem 0 !important;
+      }
+
       .footer-inner {
         max-width: 280px;
       }
 
+      #site-footer {
+        background: transparent !important;
+        padding: 1.5rem 1rem !important;
+      }
     }
 
     /* @400px — countdown is fully fluid via clamp, no extra overrides needed */
